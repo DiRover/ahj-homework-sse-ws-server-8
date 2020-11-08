@@ -82,7 +82,6 @@ router.get('/sse', async (ctx) => {
     stream(sse) {
       const interval = setInterval(() => {
         const evType = getRandomEvent();
-        //console.log(type);
         const event = messages.filter((evn) => {
           return evn.type === evType;
         });
