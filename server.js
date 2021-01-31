@@ -1,7 +1,48 @@
 const http = require('http');
 const Koa = require('koa');
 const Router = require('koa-router');
+const { streamEvents } = require('http-event-stream');
+const uuid = require('uuid');
+const { type } = require('os');
+
 const app = new Koa();
+
+const messages = [
+  {
+    msg: 'Идёт перемещение мяча по полю, игроки и той, и другой команды активно пытаются атаковать',
+    type: 'action'
+  },
+  {
+    msg: 'Нарушение правил, будет штрафной удар',
+    type: 'freekick'
+  },
+  {
+    msg: 'Отличный удар! И Г-О-Л!',
+    type: 'goal'
+  },
+  {
+    msg: 'Игра продолжается',
+    type: 'other'
+  },
+];
+
+app.use(async (ctx, next) => {
+  ctx.body = 'server is working';
+});
+
+function getRandomEvent() {//описываем случайность события
+  const foo = Math.random() * 100;
+  console.log(foo);
+  if (foo < 11) { // 0-10
+    return 'goal';
+  } else if (foo < 41) { // 10-40
+    return 'freekick';
+  } else if (foo < 51) { //40-50
+    return 'action';
+  } else {
+    return 'other';
+  }
+};
 
 app.use(async (ctx, next) => {
   const origin = ctx.request.get('Origin');
@@ -30,14 +71,37 @@ app.use(async (ctx, next) => {
     if (ctx.request.get('Access-Control-Request-Headers')) {
       ctx.response.set('Access-Control-Allow-Headers', ctx.request.get('Access-Control-Request-Headers'));
     }
-
     ctx.response.status = 204;
   }
 });
 
 const router = new Router();
 
-// TODO: write code here
+router.get('/sse', async (ctx) => {
+  streamEvents(ctx.req, ctx.res, {
+    async fetch() {
+      return [];
+    },
+    stream(sse) {
+      const interval = setInterval(() => {
+        const evType = getRandomEvent();//получаем случайное событие
+        const event = messages.filter((evn) => {
+          return evn.type === evType;//получаем значение события
+        });
+        console.log(event);
+        sse.sendEvent({//отправяляем на фронт присвоив уникальный id
+          id: uuid.v4(),
+          data: JSON.stringify({field: event}),
+          event: 'message',
+        });
+      }, 5000);
+
+      return () => clearInterval(interval);//не помню почему нужно удалять сетинтервал, но это нужно
+    }
+  });
+
+  ctx.respond = false; // koa не будет обрабатывать ответ
+});
 
 router.get('/index', async (ctx) => {
   ctx.response.body = 'hello';
@@ -45,6 +109,7 @@ router.get('/index', async (ctx) => {
 
 app.use(router.routes()).use(router.allowedMethods());
 
-const port = process.env.PORT || 7070;
+const port = process.env.PORT || 7871;
 const server = http.createServer(app.callback())
 server.listen(port);
+
