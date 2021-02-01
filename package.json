@@ -5,12 +5,8 @@
   "main": "server.js",
   "scripts": {
     "prestart": "npm install",
-    "start": "forever server.js",
-    "sse": "forever -w server.sse.complete.js",
-    "ws": "forever -w server.ws.complete.js",
-    "watch": "forever -w server.js",
-    "serve": "nodemon server.sse.complete.js",
-    "server": "nodemon -w ./ server.sse.complete.js"
+    "server": "nodemon server.js",
+    "sse": "nodemon -w ./ server.js"
   },
   "repository": {
     "type": "git",
@@ -23,10 +19,12 @@
   },
   "homepage": "https://github.com/DiRover/ahj-homework-sse-ws-server-8#readme",
   "dependencies": {
+    "@koa/cors": "^3.1.0",
     "forever": "^3.0.4",
     "http-event-stream": "^0.2.0",
     "koa": "^2.13.0",
     "koa-body": "^4.2.0",
+    "koa-cors": "^0.0.16",
     "koa-router": "^10.0.0",
     "koa-static": "^5.0.0",
     "nodemon": "^2.0.6",

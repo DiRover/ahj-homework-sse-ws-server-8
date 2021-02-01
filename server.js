@@ -6,15 +6,11 @@ const uuid = require('uuid');
 const cors = require('@koa/cors');
 
 const app = new Koa();
+const router = new Router();
 
 app.use(cors());
 
-app.use(koaBody({
-  urlencoded: true,
-  multipart: true,
-  text: true,
-  json: true,
-}));
+
 
 
 const messages = [
@@ -86,7 +82,7 @@ app.use(async (ctx, next) => {
   }
 });
 */
-const router = new Router();
+
 
 router.get('/sse', async (ctx) => {
   streamEvents(ctx.req, ctx.res, {
