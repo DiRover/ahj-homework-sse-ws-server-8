@@ -3,6 +3,7 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const { streamEvents } = require('http-event-stream');
 const uuid = require('uuid');
+const { type } = require('os');
 
 const app = new Koa();
 
@@ -25,11 +26,7 @@ const messages = [
   },
 ];
 
-app.use(async (ctx, next) => {
-  ctx.body = 'server is working';
-});
-
-function getRandomEvent() {//описываем случайность события
+function getRandomEvent() { //описываем случайность события
   const foo = Math.random() * 100;
   console.log(foo);
   if (foo < 11) { // 0-10
@@ -64,13 +61,12 @@ app.use(async (ctx, next) => {
   if (ctx.request.get('Access-Control-Request-Method')) {
     ctx.response.set({
       ...headers,
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH',
+      'Access-Control-Allow-Methods': 'GET, POST, PUD, DELETE, PATCH',
     });
 
     if (ctx.request.get('Access-Control-Request-Headers')) {
       ctx.response.set('Access-Control-Allow-Headers', ctx.request.get('Access-Control-Request-Headers'));
     }
-
     ctx.response.status = 204;
   }
 });
@@ -84,19 +80,19 @@ router.get('/sse', async (ctx) => {
     },
     stream(sse) {
       const interval = setInterval(() => {
-        const evType = getRandomEvent();//получаем случайное событие
+        const evType = getRandomEvent(); //получаем случайное событие
         const event = messages.filter((evn) => {
-          return evn.type === evType;//получаем значение события
+          return evn.type === evType; //получаем значение события 
         });
         console.log(event);
-        sse.sendEvent({//отправяляем на фронт присвоив уникальный id
+        sse.sendEvent({ //отправяляем на фронт присвоив уникальный id
           id: uuid.v4(),
           data: JSON.stringify({field: event}),
           event: 'message',
         });
       }, 5000);
 
-      return () => clearInterval(interval);//не помню почему нужно удалять сетинтервал, но это нужно
+      return () => clearInterval(interval); //не помню почему нужно удалять сетинтервал, но это нужно
     }
   });
 
