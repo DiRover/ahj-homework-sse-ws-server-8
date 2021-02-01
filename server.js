@@ -3,8 +3,19 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const { streamEvents } = require('http-event-stream');
 const uuid = require('uuid');
+const cors = require('@koa/cors');
 
 const app = new Koa();
+
+app.use(cors());
+
+app.use(koaBody({
+  urlencoded: true,
+  multipart: true,
+  text: true,
+  json: true,
+}));
+
 
 const messages = [
   {
@@ -43,6 +54,7 @@ function getRandomEvent() {//описываем случайность собы�
   }
 };
 
+/*
 app.use(async (ctx, next) => {
   const origin = ctx.request.get('Origin');
   if (!origin) {
@@ -73,7 +85,7 @@ app.use(async (ctx, next) => {
     ctx.response.status = 204;
   }
 });
-
+*/
 const router = new Router();
 
 router.get('/sse', async (ctx) => {
