@@ -4,12 +4,12 @@ const Router = require('koa-router');
 const koaBody = require('koa-body');
 const { streamEvents } = require('http-event-stream');
 const uuid = require('uuid');
-const cors = require('@koa/cors');
+//const cors = require('@koa/cors');
 
 const app = new Koa();
 const router = new Router();
 
-app.use(cors());
+//app.use(cors());
 
 app.use(koaBody({
   urlencoded: true,
