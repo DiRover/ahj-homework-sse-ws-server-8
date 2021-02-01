@@ -42,7 +42,6 @@ function getRandomEvent() { //описываем случайность собы
 
 app.use(async (ctx, next) => {
   const origin = ctx.request.get('Origin');
-  ctx.body = 'server is working';
   if (!origin) {
     return await next();
   }
