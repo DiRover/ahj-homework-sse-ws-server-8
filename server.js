@@ -60,6 +60,13 @@ app.use(async (ctx, next) => {
   const headers = { 'Access-Control-Allow-Origin': '*', };
 
   console.log(ctx.request.method);
+
+  ctx.body = ctx.request.method;
+
+  app.use(async (ctx, next) => {
+    ctx.body = ctx.request.method;
+  });
+
   if (ctx.request.method === 'OPTIONS') {
     ctx.response.set({...headers});
 }
