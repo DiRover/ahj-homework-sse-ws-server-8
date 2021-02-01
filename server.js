@@ -1,17 +1,10 @@
 const http = require('http');
 const Koa = require('koa');
 const Router = require('koa-router');
-const koaBody = require('koa-body');
 const { streamEvents } = require('http-event-stream');
 const uuid = require('uuid');
-//const cors = require('@koa/cors');
 
 const app = new Koa();
-const router = new Router();
-
-//app.use(cors());
-
-
 
 const messages = [
   {
@@ -50,7 +43,6 @@ function getRandomEvent() {//описываем случайность собы�
   }
 };
 
-
 app.use(async (ctx, next) => {
   const origin = ctx.request.get('Origin');
   if (!origin) {
@@ -58,18 +50,6 @@ app.use(async (ctx, next) => {
   }
 
   const headers = { 'Access-Control-Allow-Origin': '*', };
-
-  console.log(ctx.request.method);
-
-  ctx.body = ctx.request.method;
-
-  app.use(async (ctx, next) => {
-    ctx.body = ctx.request.method;
-  });
-
-  if (ctx.request.method === 'OPTIONS') {
-    ctx.response.set({...headers});
-}
 
   if (ctx.request.method !== 'OPTIONS') {
     ctx.response.set({ ...headers });
@@ -84,16 +64,18 @@ app.use(async (ctx, next) => {
   if (ctx.request.get('Access-Control-Request-Method')) {
     ctx.response.set({
       ...headers,
-      'Access-Control-Allow-Methods': 'GET, POST, PUD, DELETE, PATCH',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH',
     });
 
     if (ctx.request.get('Access-Control-Request-Headers')) {
       ctx.response.set('Access-Control-Allow-Headers', ctx.request.get('Access-Control-Request-Headers'));
     }
+
     ctx.response.status = 204;
   }
 });
 
+const router = new Router();
 
 router.get('/sse', async (ctx) => {
   streamEvents(ctx.req, ctx.res, {
