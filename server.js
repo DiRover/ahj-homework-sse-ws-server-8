@@ -11,12 +11,6 @@ const router = new Router();
 
 //app.use(cors());
 
-app.use(koaBody({
-  urlencoded: true,
-  multipart: true,
-  text: true,
-  json: true,
-}));
 
 
 const messages = [
@@ -65,6 +59,7 @@ app.use(async (ctx, next) => {
 
   const headers = { 'Access-Control-Allow-Origin': '*', };
 
+  console.log(ctx.request.method);
   if (ctx.request.method === 'OPTIONS') {
     ctx.response.set({...headers});
 }
