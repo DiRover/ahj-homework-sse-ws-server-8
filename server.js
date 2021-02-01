@@ -7,10 +7,6 @@ const { type } = require('os');
 
 const app = new Koa();
 
-app.use(async, (ctx, next) => {
-  ctx.body = 'server is working';
-});
-
 const messages = [
   {
     msg: 'Идёт перемещение мяча по полю, игроки и той, и другой команды активно пытаются атаковать',
@@ -46,6 +42,7 @@ function getRandomEvent() { //описываем случайность собы
 
 app.use(async (ctx, next) => {
   const origin = ctx.request.get('Origin');
+  ctx.body = 'server is working';
   if (!origin) {
     return await next();
   }
