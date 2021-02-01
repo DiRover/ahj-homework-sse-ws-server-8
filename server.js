@@ -56,7 +56,7 @@ function getRandomEvent() {//описываем случайность собы�
   }
 };
 
-/*
+
 app.use(async (ctx, next) => {
   const origin = ctx.request.get('Origin');
   if (!origin) {
@@ -87,7 +87,6 @@ app.use(async (ctx, next) => {
     ctx.response.status = 204;
   }
 });
-*/
 
 
 router.get('/sse', async (ctx) => {
